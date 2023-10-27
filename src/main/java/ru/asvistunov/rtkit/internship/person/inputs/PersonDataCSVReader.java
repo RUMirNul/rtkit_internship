@@ -1,8 +1,8 @@
 package ru.asvistunov.rtkit.internship.person.inputs;
 
+import ru.asvistunov.rtkit.internship.collections.MyArrayList;
 import ru.asvistunov.rtkit.internship.person.data.Person;
 import ru.asvistunov.rtkit.internship.person.data.SubjectGrade;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonDataGroups;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,25 +10,32 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Класс `PersonDataCSVReader` предоставляет методы для чтения данных о людях из CSV-файла и загрузки их в список
- * групп (PersonDataGroups).
+ * Класс PersonDataCSVReader реализует интерфейс DataLoader< Person, String > и предназначен для
+ * загрузки данных о людях из CSV-файла.
  */
-public class PersonDataCSVReader {
+public class PersonDataCSVReader implements DataLoader<Person, String> {
+
+    /**
+     * Константа, представляющая название предмета по умолчанию для оценок.
+     */
     public static final String UNDEFINED_SUBJECT_NAME = "undefined";
 
     /**
-     * Метод `loadPersonData` загружает данные о людях из указанного CSV-файла и добавляет их в список групп.
+     * Загружает данные о людях из указанного CSV-файла.
      *
-     * @param path                 Путь к CSV-файлу с данными о людях.
-     * @param personDataGroupsList Список групп, в которые будут добавлены данные.
-     * @throws Exception Если произошла ошибка при чтении файла или список групп пустой или null.
+     * @param filePath Путь к CSV-файлу, из которого будут загружены данные.
+     * @return Список объектов типа Person, содержащий информацию о людях.
+     * @throws Exception Если возникнут проблемы при чтении файла или парсинге данных.
      */
-    public static void loadPersonData(String path, List<PersonDataGroups> personDataGroupsList) throws Exception {
-        if (personDataGroupsList == null || personDataGroupsList.size() == 0) {
-            throw new Exception("Список классов, куда записывать данные пустой или null.");
+    @Override
+    public List<Person> loadData(String filePath) throws Exception {
+        if (!filePath.endsWith(".csv")) {
+            throw new Exception("Неподдерживаемый формат файла.");
         }
 
-        try (BufferedReader csvReader = new BufferedReader(new FileReader(path))) {
+        List<Person> personList = new MyArrayList<>();
+
+        try (BufferedReader csvReader = new BufferedReader(new FileReader(filePath))) {
             int count = 0;
             String[] columnsNames = null;
             String row;
@@ -51,15 +58,14 @@ public class PersonDataCSVReader {
                                 UNDEFINED_SUBJECT_NAME : columnsNames[i], Integer.parseInt(data[i]));
                         person.addSubjectGrade(subjectGrade);
                     }
-
-                    for (PersonDataGroups pdg : personDataGroupsList) {
-                        pdg.addPerson(person);
-                    }
+                    personList.add(person);
                 }
                 count++;
             }
         } catch (IOException e) {
             throw new Exception("Не удалось прочитать файл.");
         }
+
+        return personList;
     }
 }
