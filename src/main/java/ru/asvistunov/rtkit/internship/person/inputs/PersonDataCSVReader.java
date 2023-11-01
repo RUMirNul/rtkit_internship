@@ -63,7 +63,7 @@ public class PersonDataCSVReader implements DataLoader<Person, String> {
                 count++;
             }
         } catch (IOException e) {
-            throw new Exception("Не удалось прочитать файл.");
+            System.out.println("Не удалось прочитать файл. " + e.getMessage());
         }
 
         return personList;

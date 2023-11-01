@@ -11,11 +11,12 @@ import ru.asvistunov.rtkit.internship.service.StudentServiceImpl;
 import java.util.Scanner;
 
 public class Main {
+    public static Scanner SCANNER = new Scanner(System.in);
     public static void main(String[] args) {
         DataLoader<Person, String> dataLoader = new PersonDataCSVReader();
         StudentService studentService = new StudentServiceImpl(dataLoader);
 
-        try (Scanner scanner = new Scanner(System.in)) {
+        try {
             studentService.loadStudentData("src/main/resources/students.csv");
             CommandBuilder commandBuilder = new CommandBuilder(studentService);
 
@@ -26,8 +27,8 @@ public class Main {
                     "q - Закончить\n");
 
             boolean proceed = true;
-            while (proceed && scanner.hasNext()) {
-                String choice = scanner.nextLine();
+            while (proceed && SCANNER.hasNext()) {
+                String choice = SCANNER.nextLine();
                 CommandEnum command;
                 switch (choice) {
                     case "a" -> command = CommandEnum.FIND_AVERAGE_GROUP_GRADE;
