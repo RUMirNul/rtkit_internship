@@ -1,53 +1,54 @@
 package ru.asvistunov.rtkit.internship;
 
-import ru.asvistunov.rtkit.internship.person.PersonDataQuerys;
+import ru.asvistunov.rtkit.internship.commands.CommandBuilder;
+import ru.asvistunov.rtkit.internship.commands.CommandEnum;
 import ru.asvistunov.rtkit.internship.person.data.Person;
-import ru.asvistunov.rtkit.internship.person.data.groups.ClassroomDataGroups;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonAgeDataGroups;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonDataGroups;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonNameDataGroups;
+import ru.asvistunov.rtkit.internship.person.inputs.DataLoader;
 import ru.asvistunov.rtkit.internship.person.inputs.PersonDataCSVReader;
+import ru.asvistunov.rtkit.internship.service.StudentService;
+import ru.asvistunov.rtkit.internship.service.StudentServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+    public static Scanner SCANNER = new Scanner(System.in);
     public static void main(String[] args) {
-        ClassroomDataGroups classroomDataGroups = new ClassroomDataGroups();
-        PersonAgeDataGroups personAgeDataGroups = new PersonAgeDataGroups();
-        PersonNameDataGroups personNameDataGroups = new PersonNameDataGroups();
+        DataLoader<Person, String> dataLoader = new PersonDataCSVReader();
+        StudentService studentService = new StudentServiceImpl(dataLoader);
 
-        List<PersonDataGroups> personDataGroupsList = new ArrayList<>();
-        personDataGroupsList.add(classroomDataGroups);
-        personDataGroupsList.add(personAgeDataGroups);
-        personDataGroupsList.add(personNameDataGroups);
+        try {
+            studentService.loadStudentData("src/main/resources/students.csv");
+            CommandBuilder commandBuilder = new CommandBuilder(studentService);
 
-        try (Scanner sc = new Scanner(System.in)) {
-            PersonDataCSVReader.loadPersonData("src/main/resources/students.csv", personDataGroupsList);
+            System.out.println("Выберите какую команду выполнить:\n" +
+                    "a - Найти среднюю оценку в 10 и 11 классах\n" +
+                    "b - Найти отличников старше 14 лет\n" +
+                    "c - Найти всех студентов с заданной фамилией\n" +
+                    "q - Закончить\n");
 
-            double averageGrade10 = PersonDataQuerys.findAverageGroupGrade(10, classroomDataGroups);
-            System.out.printf("Средняя оценка в 10 класс: %.2f\n", averageGrade10);
-
-            double averageGrade11 = PersonDataQuerys.findAverageGroupGrade(11, classroomDataGroups);
-            System.out.printf("Средняя оценка в 11 класс: %.2f\n", averageGrade11);
-            System.out.println("\n");
-
-            printPerson(PersonDataQuerys.findExcellentPersonAgedAbove(14, personAgeDataGroups));
-            System.out.println("\n");
-
-            System.out.print("Введите фамилию ученика: ");
-            String familyName = sc.nextLine();
-            printPerson(PersonDataQuerys.findPersonByFamilyName(familyName, personNameDataGroups));
+            boolean proceed = true;
+            while (proceed && SCANNER.hasNext()) {
+                String choice = SCANNER.nextLine();
+                CommandEnum command;
+                switch (choice) {
+                    case "a" -> command = CommandEnum.FIND_AVERAGE_GROUP_GRADE;
+                    case "b" -> command = CommandEnum.FIND_EXCELLENT_PERSON_AGED_ABOVE;
+                    case "c" -> {
+                        command = CommandEnum.FIND_PERSON_BY_FAMILY_NAME;
+                    }
+                    case "q" -> {
+                        proceed = false;
+                        continue;
+                    }
+                    default -> {
+                        System.out.println("Такой команды нет");
+                        continue;
+                    }
+                }
+                commandBuilder.build(command).execute();
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    public static void printPerson(Person[] persons) {
-        for (Person person : persons) {
-            System.out.printf("%15s %12s, Возраст: %3d , класс: %3d\n",
-                    person.getFamilyName(), person.getName(), person.getAge(), person.getGroup());
         }
     }
 

@@ -3,11 +3,10 @@ package ru.asvistunov.rtkit.internship.person;
 import ru.asvistunov.rtkit.internship.collections.MyArrayList;
 import ru.asvistunov.rtkit.internship.person.data.Person;
 import ru.asvistunov.rtkit.internship.person.data.SubjectGrade;
-import ru.asvistunov.rtkit.internship.person.data.groups.ClassroomDataGroups;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonAgeDataGroups;
-import ru.asvistunov.rtkit.internship.person.data.groups.PersonNameDataGroups;
+import ru.asvistunov.rtkit.internship.person.data.groups.DataGroup;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Класс `PersonDataQuerys` предоставляет статические методы для выполнения запросов к данным о людях.
@@ -24,7 +23,7 @@ public class PersonDataQuerys {
      * @param dataGroups Предоставление доступа к данным.
      * @return Средняя оценка в группе.
      */
-    public static double findAverageGroupGrade(int groupNum, ClassroomDataGroups dataGroups) {
+    public static double findAverageGroupGrade(int groupNum, DataGroup<Integer> dataGroups) {
         double averageGrade = 0;
         Person[] persons = dataGroups.getPersons(groupNum);
 
@@ -56,8 +55,8 @@ public class PersonDataQuerys {
      * @param dataGroups Предоставление доступа к данным.
      * @return Массив учеников с отличными оценками, старше указанного возраста.
      */
-    public static Person[] findExcellentPersonAgedAbove(int ageAbove, PersonAgeDataGroups dataGroups) {
-        Integer[] ages = dataGroups.getAges();
+    public static Person[] findExcellentPersonAgedAbove(int ageAbove, DataGroup<Integer> dataGroups) {
+        Set<Integer> ages = dataGroups.getKeys();
 
         List<Person> excellentPersons = new MyArrayList<>();
 
@@ -102,7 +101,7 @@ public class PersonDataQuerys {
      * @param dataGroups Предоставление доступа к данным.
      * @return Массив учеников с указанной фамилией.
      */
-    public static Person[] findPersonByFamilyName(String familyName, PersonNameDataGroups dataGroups) {
+    public static Person[] findPersonByFamilyName(String familyName, DataGroup<Character> dataGroups) {
         Person[] persons = dataGroups.getPersons(familyName.charAt(0));
 
         List<Person> personsFamilyNameMatches = new MyArrayList<>();
@@ -112,5 +111,12 @@ public class PersonDataQuerys {
             }
         }
         return personsFamilyNameMatches.toArray(new Person[0]);
+    }
+
+    public static void printPerson(Person[] persons) {
+        for (Person person : persons) {
+            System.out.printf("%15s %12s, Возраст: %3d , класс: %3d\n",
+                    person.getFamilyName(), person.getName(), person.getAge(), person.getGroup());
+        }
     }
 }
