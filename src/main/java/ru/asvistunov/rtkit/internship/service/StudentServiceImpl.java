@@ -1,9 +1,11 @@
 package ru.asvistunov.rtkit.internship.service;
 
 import ru.asvistunov.rtkit.internship.collections.MyArrayList;
+import ru.asvistunov.rtkit.internship.dao.PersonDao;
+import ru.asvistunov.rtkit.internship.dao.PersonDaoImpl;
+import ru.asvistunov.rtkit.internship.dto.PersonDto;
 import ru.asvistunov.rtkit.internship.person.data.Person;
-import ru.asvistunov.rtkit.internship.person.inputs.DataLoader;
-import ru.asvistunov.rtkit.internship.service.StudentService;
+import ru.asvistunov.rtkit.internship.person.data.SubjectGrade;
 
 import java.util.List;
 
@@ -12,28 +14,18 @@ import java.util.List;
  * загрузки и получения данных о студентах.
  */
 public class StudentServiceImpl implements StudentService {
-    private final DataLoader<Person, String> dataLoader;
-    private List<Person> personList;
+    private final PersonDao personDao;
 
-    /**
-     * Конструктор класса, принимающий объект типа DataLoader< Person, String >.
-     *
-     * @param dataLoader Объект, выполняющий загрузку данных о студентах из файла.
-     */
-    public StudentServiceImpl(DataLoader<Person, String> dataLoader) {
-        this.dataLoader = dataLoader;
-        this.personList = new MyArrayList<>();
+    private StudentServiceImpl() {
+        this.personDao = PersonDaoImpl.getInstance();
     }
 
-    /**
-     * Загружает данные о студентах из указанного файла.
-     *
-     * @param filePath Путь к файлу, содержащему данные о студентах.
-     * @throws Exception Если возникли проблемы при загрузке данных.
-     */
-    @Override
-    public void loadStudentData(String filePath) throws Exception {
-        personList = dataLoader.loadData(filePath);
+    private static final class InstanceHolder {
+        private static final StudentServiceImpl INSTANCE = new StudentServiceImpl();
+    }
+
+    public static StudentServiceImpl getInstance() {
+        return InstanceHolder.INSTANCE;
     }
 
     /**
@@ -43,6 +35,34 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public List<Person> getStudentList() {
-        return personList;
+        return personDao.getStudentList();
+    }
+
+    @Override
+    public List<Person> getStudentListByGroupNumber(int groupNumber) {
+        return personDao.getStudentListByGroupNumber(groupNumber);
+    }
+
+    @Override
+    public List<PersonDto> getMeanGradeStudentByGroupNumber(int groupNumber) {
+        List<Person> personList = personDao.getStudentListByGroupNumber(groupNumber);
+        List<PersonDto> resultList = new MyArrayList<>();
+        for (Person person : personList) {
+            PersonDto personDto = new PersonDto();
+            personDto.setName(person.getName());
+            personDto.setFamilyName(person.getFamilyName());
+            personDto.setGroup(person.getGroup());
+            personDto.setAge(person.getAge());
+
+            double meanGrade = 0;
+            for (SubjectGrade subjectGrade : person.getSubjectGradeList()) {
+                meanGrade += (double) subjectGrade.getGrade() / person.getSubjectGradeList().size();
+            }
+            meanGrade = (double) Math.round(meanGrade * 100) / 100;
+            personDto.setMeanGrade(meanGrade);
+
+            resultList.add(personDto);
+        }
+        return resultList;
     }
 }
