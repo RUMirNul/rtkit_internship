@@ -13,7 +13,7 @@ public class Person {
     private String name;
     private int age;
     private int group;
-    private final List<SubjectGrade> subjectGradeList;
+    private List<SubjectGrade> subjectGradeList;
 
     /**
      * Конструктор без аргументов создает экземпляр класса `Person` и инициализирует пустой список оценок.
@@ -83,6 +83,10 @@ public class Person {
 
     public List<SubjectGrade> getSubjectGradeList() {
         return subjectGradeList;
+    }
+
+    public void setSubjectGradeList(List<SubjectGrade> newSubjectGradeList) {
+        subjectGradeList = newSubjectGradeList;
     }
 
     @Override

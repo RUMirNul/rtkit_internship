@@ -1,5 +1,8 @@
 package ru.asvistunov.rtkit.internship.dto;
 
+/**
+ * Класс PersonDto представляет объект для передачи информации о студенте в формате DTO (Data Transfer Object).
+ */
 public class PersonDto {
     private String familyName;
     private String name;
@@ -7,6 +10,15 @@ public class PersonDto {
     private int group;
     private double meanGrade;
 
+    /**
+     * Конструктор класса, инициализирующий объект PersonDto.
+     *
+     * @param familyName Фамилия студента.
+     * @param name       Имя студента.
+     * @param age        Возраст студента.
+     * @param group      Номер группы, к которой относится студент.
+     * @param meanGrade  Средний балл студента.
+     */
     public PersonDto(String familyName, String name, int age, int group, double meanGrade) {
         this.familyName = familyName;
         this.name = name;
@@ -15,6 +27,9 @@ public class PersonDto {
         this.meanGrade = meanGrade;
     }
 
+    /**
+     * Пустой конструктор класса PersonDto.
+     */
     public PersonDto() {
     }
 

@@ -5,7 +5,6 @@ import ru.asvistunov.rtkit.internship.person.data.Person;
 import ru.asvistunov.rtkit.internship.person.data.SubjectGrade;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -36,7 +35,7 @@ public class PersonDataCSVReader implements DataLoader<Person, String> {
 
         List<Person> personList = new MyArrayList<>();
 
-        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("students.csv")))) {
+        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath), "UTF-8"))) {
             int count = 0;
             String[] columnsNames = null;
             String row;
