@@ -7,7 +7,17 @@ import ru.asvistunov.rtkit.internship.person.data.SubjectGrade;
 import java.sql.*;
 import java.util.List;
 
+/**
+ * Класс PersonDBService предоставляет методы для взаимодействия с базой данных, связанными с сущностью Person.
+ */
 public class PersonDBService {
+
+    /**
+     * Метод getPerson(int personId) возвращает информацию о студенте по его идентификатору.
+     *
+     * @param personId Идентификатор студента.
+     * @return Объект Person с информацией о студенте.
+     */
     public static Person getPerson(int personId) {
         Person person = new Person();
 
@@ -66,6 +76,11 @@ public class PersonDBService {
         return person;
     }
 
+    /**
+     * Метод addPerson(Person person) добавляет информацию о студенте в базу данных.
+     *
+     * @param person Объект Person с информацией о студенте.
+     */
     public static void addPerson(Person person) {
         try {
 
@@ -91,6 +106,11 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод updatePerson(PersonDto personDto) обновляет информацию о студенте в базе данных.
+     *
+     * @param personDto Объект PersonDto с новой информацией о студенте.
+     */
     public static void updatePerson(PersonDto personDto) {
         try {
             Connection connection = DatabaseService.connect();
@@ -116,6 +136,11 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод deletePerson(int personId) удаляет информацию о студенте и его оценках из базы данных.
+     *
+     * @param personId Идентификатор студента для удаления.
+     */
     public static void deletePerson(int personId) {
         try {
             Connection connection = DatabaseService.connect();
@@ -152,6 +177,20 @@ public class PersonDBService {
         }
     }
 
+    // Дополнительные методы для внутреннего использования:
+
+    /**
+     * Метод updateStudent обновляет информацию о студенте в базе данных.
+     *
+     * @param connection Соединение с базой данных.
+     * @param personId   Идентификатор студента.
+     * @param name       Имя студента.
+     * @param familyName Фамилия студента.
+     * @param age        Возраст студента.
+     * @param groupId    Идентификатор группы, к которой принадлежит студент.
+     * @return Идентификатор обновленного студента.
+     * @throws SQLException В случае ошибки SQL.
+     */
     private static int updateStudent(Connection connection, int personId, String name, String familyName, int age, int groupId) throws SQLException {
         String query = "UPDATE Students SET name = ?, family_name = ?, age = ?, group_id = ? WHERE student_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -165,6 +204,15 @@ public class PersonDBService {
         return personId;
     }
 
+    /**
+     * Метод updateSubjectGrades обновляет оценки студента в базе данных.
+     *
+     * @param connection       Соединение с базой данных.
+     * @param studentId        Идентификатор студента.
+     * @param groupId          Идентификатор группы, к которой принадлежит студент.
+     * @param subjectGradeList Список объектов SubjectGrade с оценками.
+     * @throws SQLException В случае ошибки SQL.
+     */
     private static void updateSubjectGrades(Connection connection, int studentId, int groupId, List<SubjectGrade> subjectGradeList) throws SQLException {
         String deleteGradesQuery = "DELETE FROM Grades WHERE student_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteGradesQuery)) {
@@ -175,6 +223,14 @@ public class PersonDBService {
         addSubjectGrades(connection, studentId, groupId, subjectGradeList);
     }
 
+    /**
+     * Метод findOrCreateGroup находит существующую или создает новую группу в базе данных.
+     *
+     * @param connection Соединение с базой данных.
+     * @param groupName  Имя группы.
+     * @return Идентификатор группы.
+     * @throws SQLException В случае ошибки SQL.
+     */
     private static int findOrCreateGroup(Connection connection, int groupName) throws SQLException {
         String query = "SELECT group_id FROM StudyGroups WHERE group_name = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -188,6 +244,14 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод addGroup добавляет новую учебную группу в базу данных.
+     *
+     * @param connection Соединение с базой данных.
+     * @param groupName  Название группы.
+     * @return Идентификатор новой группы.
+     * @throws SQLException Если произошла ошибка при выполнении SQL-запроса.
+     */
     private static int addGroup(Connection connection, int groupName) throws SQLException {
         String query = "INSERT INTO StudyGroups (group_name) VALUES (?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -203,6 +267,17 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод addStudent добавляет нового студента в базу данных.
+     *
+     * @param connection Соединение с базой данных.
+     * @param name       Имя студента.
+     * @param familyName Фамилия студента.
+     * @param age        Возраст студента.
+     * @param groupId    Идентификатор группы, к которой принадлежит студент.
+     * @return Идентификатор нового студента.
+     * @throws SQLException Если произошла ошибка при выполнении SQL-запроса.
+     */
     private static int addStudent(Connection connection, String name, String familyName, int age, int groupId) throws SQLException {
         String query = "INSERT INTO Students (name, family_name, age, group_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -221,6 +296,15 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод addSubjectGrades добавляет оценки по предметам студента в базу данных.
+     *
+     * @param connection       Соединение с базой данных.
+     * @param studentId        Идентификатор студента.
+     * @param groupId          Идентификатор группы, к которой принадлежит студент.
+     * @param subjectGradeList Список оценок по предметам.
+     * @throws SQLException Если произошла ошибка при выполнении SQL-запросов.
+     */
     private static void addSubjectGrades(Connection connection, int studentId, int groupId, List<SubjectGrade> subjectGradeList) throws SQLException {
         String query = "INSERT INTO Grades (student_id, curricula_id, grade) VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -250,6 +334,15 @@ public class PersonDBService {
         }
     }
 
+    /**
+     * Метод addCurricula добавляет новую учебную программу в базу данных.
+     *
+     * @param connection  Соединение с базой данных.
+     * @param groupId     Идентификатор группы, к которой относится учебная программа.
+     * @param subjectName Название предмета.
+     * @return Идентификатор новой учебной программы (curricula_id).
+     * @throws SQLException Если произошла ошибка при выполнении SQL-запросов.
+     */
     private static int addCurricula(Connection connection, int groupId, String subjectName) throws SQLException {
         String query = "INSERT INTO Curricula (group_id, subject_name) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {

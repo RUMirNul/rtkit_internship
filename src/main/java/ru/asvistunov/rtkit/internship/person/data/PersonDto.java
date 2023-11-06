@@ -4,8 +4,10 @@ import ru.asvistunov.rtkit.internship.collections.MyArrayList;
 
 import java.util.List;
 
+/**
+ * Класс PersonDto представляет собой объект для хранения информации о студенте.
+ */
 public class PersonDto {
-
     private int id;
     private String familyName;
     private String name;
@@ -13,10 +15,21 @@ public class PersonDto {
     private int group;
     private List<SubjectGrade> subjectGradeList;
 
+    /**
+     * Конструктор без аргументов для создания объекта PersonDto.
+     */
     public PersonDto() {
         this.subjectGradeList = new MyArrayList<>();
     }
 
+    /**
+     * Конструктор с аргументами для создания объекта PersonDto с указанными значениями.
+     * @param id          Идентификатор студента
+     * @param familyName  Фамилия студента
+     * @param name        Имя студента
+     * @param age         Возраст студента
+     * @param group       Группа, к которой относится студент
+     */
     public PersonDto(int id, String familyName, String name, int age, int group) {
         this.id = id;
         this.familyName = familyName;
