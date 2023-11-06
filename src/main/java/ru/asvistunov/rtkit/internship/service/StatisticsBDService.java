@@ -63,7 +63,7 @@ public class StatisticsBDService {
                 "JOIN Grades g ON s.student_id = g.student_id " +
                 "JOIN StudyGroups sg ON s.group_id = sg.group_id " +
                 "WHERE s.family_name = ? " +
-                "GROUP BY s.name, s.family_name, sg.group_name";
+                "GROUP BY s.student_id, s.name, s.family_name, sg.group_name";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, familyName);
