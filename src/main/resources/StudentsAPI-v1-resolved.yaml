@@ -1,0 +1,171 @@
+---
+openapi: 3.0.0
+info:
+  title: Students API
+  description: Информация о студентах и их оценках. Изменение оценок.
+  version: v1
+servers:
+- url: /
+paths:
+  /students/average_grade/{group_number}:
+    get:
+      summary: Получение средних оценок учеников из одной группы.
+      description: Возвращает список всех учеников из одной группы и их средние оценки.
+      parameters:
+      - name: group_number
+        in: path
+        description: Номер группы.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Запрос выполнен успешно.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AverageGradeResponse'
+        "400":
+          description: Были отправлены неверные данные.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Группа не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /students/update_grade:
+    put:
+      summary: Изменение оценки по предмету.
+      description: Изменение оценки по предмету у ученика определённого по ФИО и группе.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/students_update_grade_body'
+        required: true
+      responses:
+        "200":
+          description: Зыпрос выполнен успешно.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        "400":
+          description: Некорректный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_1'
+        "404":
+          description: Человек для обновления оценки не найден.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_1'
+components:
+  schemas:
+    AverageGradeResponse:
+      type: object
+      properties:
+        familyName:
+          type: string
+          example: Абрамов
+        name:
+          type: string
+          example: Иван
+        age:
+          type: integer
+          format: int32
+          example: 10
+        group:
+          type: integer
+          format: int32
+          example: 11
+        meanGrade:
+          type: number
+          format: float64
+          example: 3.81
+    Person:
+      type: object
+      properties:
+        familyName:
+          type: string
+          example: Абрамов
+        name:
+          type: string
+          example: Иван
+        age:
+          type: integer
+          format: int32
+          example: 10
+        group:
+          type: integer
+          format: int32
+          example: 11
+        subjectAndGradeList:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectAndGrade'
+    SubjectAndGrade:
+      type: object
+      properties:
+        subject:
+          type: string
+          example: physics
+        grade:
+          type: integer
+          format: int32
+          example: 3
+    inline_response_400:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          example: Номер группы должен быть не пустым и являться целым числом
+    inline_response_404:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          example: Группа не найдена.
+    students_update_grade_body:
+      type: object
+      properties:
+        familyName:
+          type: string
+          example: Абрамов
+        name:
+          type: string
+          example: Иван
+        group:
+          type: integer
+          format: int32
+          example: 11
+        subjectName:
+          type: string
+          example: physics
+        newGrade:
+          type: integer
+          format: int32
+          example: 3
+    inline_response_400_1:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          example: Некорректный запрос.
+    inline_response_404_1:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+          example: Человек для обновления оценки не найден.
