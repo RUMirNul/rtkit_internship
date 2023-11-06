@@ -12,7 +12,8 @@ import java.util.Scanner;
 
 public class Main {
     public static Scanner SCANNER = new Scanner(System.in);
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
         DataLoader<Person, String> dataLoader = new PersonDataCSVReader();
         StudentService studentService = new StudentServiceImpl(dataLoader);
 
@@ -24,6 +25,9 @@ public class Main {
                     "a - Найти среднюю оценку в 10 и 11 классах\n" +
                     "b - Найти отличников старше 14 лет\n" +
                     "c - Найти всех студентов с заданной фамилией\n" +
+                    "d - Найти среднюю оценку в 10 и 11 классе (из БД)\n" +
+                    "e - Найти отличников старше 14 лет (из БД)\n" +
+                    "f - Найти среднюю оценку ученика по фамилии (из БД)\n" +
                     "q - Закончить\n");
 
             boolean proceed = true;
@@ -36,6 +40,9 @@ public class Main {
                     case "c" -> {
                         command = CommandEnum.FIND_PERSON_BY_FAMILY_NAME;
                     }
+                    case "d" -> command = CommandEnum.FIND_AVERAGE_GROUP_GRADE_FROM_DB;
+                    case "e" -> command = CommandEnum.FIND_EXCELLENT_PERSON_ABOVE_14_FROM_DB;
+                    case "f" -> command = CommandEnum.FIND_AVERAGE_GRADE_PERSON_BY_FAMILY_NAME_FROM_DB;
                     case "q" -> {
                         proceed = false;
                         continue;
@@ -51,5 +58,4 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-
 }

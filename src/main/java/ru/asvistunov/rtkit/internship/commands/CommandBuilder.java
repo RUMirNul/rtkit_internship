@@ -1,8 +1,6 @@
 package ru.asvistunov.rtkit.internship.commands;
 
-import ru.asvistunov.rtkit.internship.commands.commands.FindAverageGroupGradeCommand;
-import ru.asvistunov.rtkit.internship.commands.commands.FindExcellentPersonAgedAboveCommand;
-import ru.asvistunov.rtkit.internship.commands.commands.FindPersonByFamilyNameCommand;
+import ru.asvistunov.rtkit.internship.commands.commands.*;
 import ru.asvistunov.rtkit.internship.service.StudentService;
 
 /**
@@ -33,6 +31,9 @@ public class CommandBuilder {
                     case FIND_AVERAGE_GROUP_GRADE -> new FindAverageGroupGradeCommand(studentService);
                     case FIND_EXCELLENT_PERSON_AGED_ABOVE -> new FindExcellentPersonAgedAboveCommand(studentService);
                     case FIND_PERSON_BY_FAMILY_NAME -> new FindPersonByFamilyNameCommand(studentService);
+                    case FIND_AVERAGE_GROUP_GRADE_FROM_DB -> new FindAverageGroupGradeFromDBCommand();
+                    case FIND_EXCELLENT_PERSON_ABOVE_14_FROM_DB -> new FindExcellentPersonAbove14FromDBCommand();
+                    case FIND_AVERAGE_GRADE_PERSON_BY_FAMILY_NAME_FROM_DB -> new FindAverageGradePersonByFamilyNameFromDBCommand();
                 };
     }
 }
