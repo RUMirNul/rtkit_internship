@@ -4,8 +4,8 @@ import ru.asvistunov.rtkit.internship.commands.Command;
 import ru.asvistunov.rtkit.internship.service.StatisticsBDService;
 
 /**
- * Класс FindAverageGroupGradeFromDBCommand реализует интерфейс Command
- * и предназначен для выполнения команды по поиску средней оценки для группы из базы данных.
+ * Класс FindAverageGroupGradeFromDBCommand реализует интерфейс Command и предназначен
+ * для выполнения команды по поиску средней оценки для группы из базы данных и вывода информации в консоль.
  */
 public class FindAverageGroupGradeFromDBCommand implements Command {
 
@@ -15,7 +15,9 @@ public class FindAverageGroupGradeFromDBCommand implements Command {
      */
     @Override
     public void execute() {
-        StatisticsBDService.getAverageGrade(11);
-        StatisticsBDService.getAverageGrade(10);
+        System.out.printf("%8s %8s\n", "Группа", "Средняя оценка");
+        System.out.printf("%8d %8.2f\n", 11, StatisticsBDService.getAverageGrade(11));
+        System.out.printf("%8s %8s\n", "Группа", "Средняя оценка");
+        System.out.printf("%8d %8.2f\n", 10, StatisticsBDService.getAverageGrade(10));
     }
 }
