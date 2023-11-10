@@ -19,7 +19,7 @@ import java.io.IOException;
  * Класс UpdateGradeServlet - сервлет, обрабатывающий put-запросы для изменения оценки по предмету у определённого
  * человека по его ФИО и группе.
  */
-@WebServlet("/students/update_grade")
+@WebServlet("/students/grade")
 public class UpdateGradeServlet extends HttpServlet {
     private final StudentService studentService = StudentServiceImpl.getInstance();
 

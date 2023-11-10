@@ -42,7 +42,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_404'
-  /students/update_grade:
+  /students/grade:
     put:
       summary: Изменение оценки по предмету.
       description: Изменение оценки по предмету у ученика определённого по ФИО и группе.
